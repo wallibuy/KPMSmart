@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - KPMS TRUST{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2><i class="fas fa-tachometer-alt me-2"></i>Admin Dashboard</h2>
+    </div>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h5>Total Requests</h5>
+                        <h3>{{ total_requests }}</h3>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-clipboard-list fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card bg-warning text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h5>Pending</h5>
+                        <h3>{{ pending_requests }}</h3>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-clock fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h5>Fulfilled</h5>
+                        <h3>{{ fulfilled_requests }}</h3>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-check-circle fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Requests Management -->
+<div class="card">
+    <div class="card-header">
+        <h5><i class="fas fa-list me-2"></i>All Requests</h5>
+    </div>
+    <div class="card-body">
+        {% if requests %}
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Order ID</th>
+                            <th>Store</th>
+                            <th>Item</th>
+                            <th>Category</th>
+                            <th>Qty</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for req in requests %}
+                        <tr>
+                            <td>{{ req.id }}</td>
+                            <td>
+                                {% if req.order_id %}
+                                    <small class="text-muted">{{ req.order_id }}</small>
+                                    {% if req.order_item_count > 1 %}
+                                        <br><span class="badge bg-info">{{ req.order_item_count }} items</span>
+                                    {% endif %}
+                                {% else %}
+                                    <span class="text-muted">Single</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ req.store_name }}</td>
+                            <td>{{ req.item_name }}</td>
+                            <td>
+                                <span class="badge {% if req.item_category == 'Stationery' %}bg-primary{% elif req.item_category == 'Stock' %}bg-info{% else %}bg-secondary{% endif %}">
+                                    {{ req.item_category }}
+                                </span>
+                            </td>
+                            <td>{{ req.quantity }}</td>
+                            <td>R{{ "%.2f"|format(req.total_price) }}</td>
+                            <td>
+                                {% if req.status == 'pending' %}
+                                    <span class="badge bg-warning">Pending</span>
+                                {% else %}
+                                    <span class="badge bg-success">Fulfilled</span>
+                                    {% if req.fulfilled_by %}
+                                        <br><small class="text-muted">by {{ req.fulfilled_by }}</small>
+                                    {% endif %}
+                                {% endif %}
+                            </td>
+                            <td>
+                                <small>{{ req.requested_at }}</small>
+                                {% if req.fulfilled_at %}
+                                    <br><small class="text-success">{{ req.fulfilled_at }}</small>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if req.status == 'pending' %}
+                                    <form method="POST" action="{{ url_for('fulfill_request', request_id=req.id) }}" style="display: inline;">
+                                        <button type="submit" class="btn btn-sm btn-success" title="Fulfill Request">
+                                            <i class="fas fa-check"></i>
+                                        </button>
+                                    </form>
+                                {% else %}
+                                    <form method="POST" action="{{ url_for('unfulfill_request', request_id=req.id) }}" style="display: inline;">
+                                        <button type="submit" class="btn btn-sm btn-warning" title="Mark as Pending">
+                                            <i class="fas fa-undo"></i>
+                                        </button>
+                                    </form>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="text-center text-muted">
+                <i class="fas fa-inbox fa-3x mb-3"></i>
+                <p>No requests found. Stores will submit requests here.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

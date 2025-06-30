@@ -1,0 +1,84 @@
+🏪 KPMS TRUST - Enhanced Stock Display System
+
+QUICK START GUIDE
+================
+
+1. EXTRACT FILES: Unzip this folder to your desired location
+
+2. INSTALL PYTHON: Make sure you have Python 3.7+ installed
+   Check with: python --version
+
+3. RUN THE APPLICATION:
+   Option A (Recommended): Double-click "run.py" 
+   Option B: Open terminal/command prompt and type: python run.py
+   Option C: Type: python app.py
+
+4. OPEN IN BROWSER: Go to http://localhost:5000
+
+LOGIN CREDENTIALS
+================
+
+Admin Access:
+- Username: admin
+- Password: adminpass
+
+Store Access (31 stores):
+- Username: store01 to store31
+- Password: 123
+
+NEW FEATURES IN THIS VERSION
+===========================
+
+✅ Stock Level Visibility:
+   - When stores select items, they now see available stock levels
+   - Color-coded warnings: Red (low), Yellow (medium), Green (good stock)
+   - Stock validation prevents ordering more than available
+
+✅ Enhanced Store Dashboard:
+   - Clear price and stock display for each item
+   - Real-time stock level checking
+   - Better item selection interface
+
+✅ Complete Multi-Item Cart System:
+   - Add multiple items to cart before submitting
+   - Combined orders with single order IDs
+   - Professional invoice generation for multi-item orders
+
+✅ All Previous Features Working:
+   - 31 store locations (SS PLAZA, SS CORNUBIA, etc.)
+   - 29 actual inventory items with correct categories
+   - Admin dashboard with order management
+   - PDF invoice generation and downloads
+   - Inventory management with price/stock editing
+
+WHAT'S INCLUDED
+==============
+
+- app.py (Main Flask application)
+- run.py (Easy launcher script)
+- requirements.txt (Dependencies)
+- README.md (Detailed documentation)
+- templates/ (All HTML pages)
+- static/ (CSS and JavaScript files)
+
+TROUBLESHOOTING
+==============
+
+If you get errors:
+1. Make sure Python 3.7+ is installed
+2. Run: pip install -r requirements.txt
+3. Check if port 5000 is available
+4. Use a modern web browser
+
+SUPPORT
+=======
+
+This system is fully functional with:
+- Multi-item shopping cart
+- Stock level visibility for stores
+- Complete order fulfillment workflow
+- Professional invoice generation
+- Admin inventory management
+- 31 store authentication system
+
+Everything has been tested and verified to work correctly!

@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+
+{% block title %}Store Dashboard - KPMS TRUST{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2><i class="fas fa-store me-2"></i>{{ store_name }} - Store Dashboard</h2>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Item Selection and Cart -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-plus-circle me-2"></i>Add Items to Cart</h5>
+            </div>
+            <div class="card-body">
+                <form id="itemForm">
+                    <div class="mb-3">
+                        <label for="category" class="form-label">Category</label>
+                        <select class="form-select" id="category" onchange="loadCategoryItems()">
+                            <option value="">Select Category</option>
+                            <option value="Stationery">Stationery</option>
+                            <option value="Stock">Stock</option>
+                            <option value="Tech">Tech</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="item_name" class="form-label">Item</label>
+                        <select class="form-select" id="item_name" disabled onchange="showItemDetails()">
+                            <option value="">Select an item</option>
+                        </select>
+                        <!-- Item details display -->
+                        <div id="itemDetails" class="mt-2 p-2 bg-light rounded" style="display: none;">
+                            <small class="text-muted">
+                                <strong>Price:</strong> <span id="itemPrice">-</span><br>
+                                <strong>Available Stock:</strong> <span id="itemStock" class="fw-bold">-</span>
+                            </small>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="quantity" class="form-label">Quantity</label>
+                        <input type="number" class="form-control" id="quantity" min="1" value="1">
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-primary" onclick="addToCart()">
+                            <i class="fas fa-cart-plus me-2"></i>Add to Cart
+                        </button>
+                    </div>
+                </form>
+                
+                <!-- Shopping Cart Display -->
+                <div id="cartSection" class="mt-4" style="display: none;">
+                    <h6><i class="fas fa-shopping-cart me-2"></i>Shopping Cart</h6>
+                    <div id="cartItems" class="mb-3"></div>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <strong>Total: R<span id="cartTotal">0.00</span></strong>
+                        <div>
+                            <button type="button" class="btn btn-sm btn-outline-warning me-2" onclick="clearCart()">
+                                <i class="fas fa-trash me-1"></i>Clear Cart
+                            </button>
+                            <button type="button" class="btn btn-sm btn-success" onclick="submitCart()">
+                                <i class="fas fa-paper-plane me-1"></i>Submit Order
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-3">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Note:</strong> Add multiple items to your cart before submitting. You can order items even when out of stock for restocking purposes.
+                    </div>
+                </div>
+                    <a href="{{ url_for('store_invoices') }}" class="btn btn-outline-success ms-2">
+                        <i class="fas fa-file-invoice me-2"></i>View My Invoices
+                    </a>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Requests -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-history me-2"></i>Recent Requests</h5>
+            </div>
+            <div class="card-body">
+                {% if requests %}
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Request ID</th>
+                                    <th>Item</th>
+                                    <th>Category</th>
+                                    <th>Qty</th>
+                                    <th>Total</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for req in requests %}
+                                <tr>
+                                    <td><small>{{ req.id }}</small></td>
+                                    <td>{{ req.item_name }}</td>
+                                    <td>
+                                        <span class="badge {% if req.item_category == 'Stationery' %}bg-primary{% elif req.item_category == 'Stock' %}bg-info{% else %}bg-secondary{% endif %}">
+                                            {{ req.item_category }}
+                                        </span>
+                                    </td>
+                                    <td>{{ req.quantity }}</td>
+                                    <td>R{{ "%.2f"|format(req.total_price) }}</td>
+                                    <td>
+                                        {% if req.status == 'pending' %}
+                                            <span class="badge bg-warning">Pending</span>
+                                        {% else %}
+                                            <span class="badge bg-success">Fulfilled</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center text-muted">
+                        <i class="fas fa-inbox fa-3x mb-3"></i>
+                        <p>No requests yet. Submit your first order above!</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hidden form for multi-item submission -->
+<form id="multiItemForm" action="{{ url_for('submit_multi_request') }}" method="POST" style="display: none;">
+    <input type="hidden" name="cart_data" id="cartData">
+</form>
+{% endblock %}
