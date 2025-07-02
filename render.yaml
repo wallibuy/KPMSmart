@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: kpm-trust
+    env: python
+    buildCommand: ""
+    startCommand: python run.py
+    plan: free
